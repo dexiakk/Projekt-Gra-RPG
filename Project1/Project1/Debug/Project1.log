@@ -1,0 +1,4 @@
+﻿  main.cpp
+X:\Projekty AGH\Projekt Gra\Project1\Project1\main.cpp(1,1): error C2059: błąd składniowy: „<”
+X:\Projekty AGH\Projekt Gra\Project1\Project1\main.cpp(3,12): error C2143: błąd składniowy: brakuje „;” przed „{”
+X:\Projekty AGH\Projekt Gra\Project1\Project1\main.cpp(3,12): error C2447: "{": brak nagłówka funkcji (stary styl formalnej listy?)

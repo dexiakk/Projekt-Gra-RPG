@@ -1,0 +1,29 @@
+﻿  main.cpp
+X:\Projekty AGH\Projekt Gra\Project1\Project1\main.cpp(26,51): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+X:\Projekty AGH\Projekt Gra\Project1\Project1\main.cpp(26,35): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+X:\Projekty AGH\Projekt Gra\Project1\Project1\main.cpp(60,50): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+X:\Projekty AGH\Projekt Gra\Project1\Project1\main.cpp(60,35): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+X:\Projekty AGH\Projekt Gra\Project1\Project1\main.cpp(305,53): warning C4244: "argument": konwersja z "T" do "float", możliwa utrata danych
+          with
+          [
+              T=unsigned int
+          ]
+X:\Projekty AGH\Projekt Gra\Project1\Project1\main.cpp(305,34): warning C4244: "argument": konwersja z "T" do "float", możliwa utrata danych
+          with
+          [
+              T=unsigned int
+          ]
+X:\Projekty AGH\Projekt Gra\Project1\Project1\main.cpp(448,39): warning C4244: "=": konwersja z "double" do "float", możliwa utrata danych
+X:\Projekty AGH\Projekt Gra\Project1\Project1\main.cpp(480,61): warning C4244: "=": konwersja z "const int" do "T", możliwa utrata danych
+          with
+          [
+              T=float
+          ]
+X:\Projekty AGH\Projekt Gra\Project1\Project1\main.cpp(481,62): warning C4244: "=": konwersja z "const int" do "T", możliwa utrata danych
+          with
+          [
+              T=float
+          ]
+X:\Projekty AGH\Projekt Gra\Project1\Project1\main.cpp(517,36): warning C4244: "argument": konwersja z "float" do "int", możliwa utrata danych
+X:\Projekty AGH\Projekt Gra\Project1\Project1\main.cpp(542,54): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+  Project1.vcxproj -> X:\Projekty AGH\Projekt Gra\Project1\x64\Debug\Project1.exe
