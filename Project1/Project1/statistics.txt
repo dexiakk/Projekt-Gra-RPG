@@ -1,4 +1,1 @@
-d 17
-dexy 390
-ds 49
-dsa 14
+dexy 110

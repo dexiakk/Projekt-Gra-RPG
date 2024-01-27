@@ -181,34 +181,7 @@ private:
 };
 
 
-class Mission {
-public:
-    Mission(const sf::Texture& texture, const sf::Vector2u& windowSize)
-        : sprite(texture), windowSize(windowSize) {
-        // Ustawienie skali i pocz¹tkowej pozycji obrazka
-        sprite.setScale(0.3f, 0.3f); // Ustawienie mniejszej skali obrazka
 
-        // Ustawienie obrazka w prawym górnym rogu ekranu
-        updatePosition(sf::Vector2f(0.f, 0.f));
-    }
-
-    void updatePosition(const sf::Vector2f& playerPos) {
-        // Ustawienie obrazka w prawym górnym rogu ekranu z uwzglêdnieniem pozycji gracza
-        float x = playerPos.x + windowSize.x;//- sprite.getGlobalBounds().width-200;
-        std::cout << windowSize.x << std::endl;
-        float y = playerPos.y;//+ 200.f; // Niewielkie przesuniêcie od górnej krawêdzi
-        sprite.setPosition(x, y);
-    }
-
-    sf::Sprite getSprite() const {
-        return sprite;
-    }
-
-private:
-    sf::Sprite sprite;
-    sf::Vector2u windowSize; // Rozmiar okna
- 
-};
 
 
 class Statistics {
@@ -234,11 +207,8 @@ public:
         auto it = playerStats.find(playerName);
         if (it != playerStats.end()) {
             moby = it->second;
-            std::cout << playerName << " killed " << moby << " mobs." << std::endl;
         }
-        else {
-            std::cout << "No statistics available for player: " << playerName << std::endl;
-        }
+
     }
 
 
@@ -271,6 +241,69 @@ private:
             statsFile.close();
         }
     }
+};
+
+class Mission {
+public:
+    Mission(const sf::Texture& texture, const sf::Vector2u& windowSize, const std::string& playerName)
+        : sprite(texture), windowSize(windowSize) {
+        // Ustawienie skali i pocz¹tkowej pozycji obrazka
+        sprite.setScale(0.6f, 0.5f); // Ustawienie mniejszej skali obrazka
+        // Ustawienie obrazka w prawym górnym rogu ekranu
+        updatePosition(sf::Vector2f(0.f, 0.f), playerName);
+    }
+    sf::Font font;
+    sf::Font font2;
+    sf::Vector2u windowSize; // Rozmiar okna
+    sf::Text titleText;
+
+
+    void updatePosition(const sf::Vector2f& playerPos, const std::string& playerName) {
+        int moby = 0;
+        int todo = 0;
+        Statistics gameStats;
+        gameStats.displayStats(playerName, moby);
+        int lvl = 0;
+
+        if (moby < 10) {
+            todo = 10;
+            lvl = 1;
+        }
+        else if (moby >= 10 && moby < 100) {
+            todo = 100;
+            lvl = 2;
+        }
+        else if (moby >= 100 && moby < 300) {
+            todo = 300;
+            lvl = 3;
+        }
+
+        int left = todo - moby;
+        std::string todoStr = std::to_string(left);
+        std::string level = "\n         Poziom " + std::to_string(lvl);
+
+
+        font.loadFromFile("C:/Windows/Fonts/arial.ttf");
+        font2.loadFromFile("KnightWarrior.otf");
+        titleText.setFont(font2);
+        titleText.setCharacterSize(30);
+        titleText.setFillColor(sf::Color::Black);
+        // Ustawienie obrazka w prawym górnym rogu ekranu z uwzglêdnieniem pozycji gracza
+        float x = playerPos.x + (windowSize.x / 2) - sprite.getGlobalBounds().width;
+        float y = playerPos.y - 530; // Niewielkie przesuniêcie od górnej krawêdzi
+        sprite.setPosition(x, y);
+        titleText.setString("           MISJA\nZabij potwory: " + todoStr + level);
+        titleText.setPosition(x + 240, y + 40);
+
+    }
+    sf::Sprite getSprite() const {
+        return sprite;
+    }
+
+
+private:
+    sf::Sprite sprite;
+
 };
 
 int Game(const std::string& playerName) {
@@ -340,7 +373,7 @@ int Game(const std::string& playerName) {
     }
 
     std::vector<Mob> mobs;
-    for (int i = 0; i < 60; ++i) {
+    for (int i = 0; i < 100; ++i) {
         mobs.emplace_back(mobTexture, 1.5f);
         mobs.back().spawn(playerPosition.x, playerPosition.y);
     }
@@ -354,9 +387,9 @@ int Game(const std::string& playerName) {
     // Tworzenie obiektu Mission
     sf::Texture missionTexture;
     missionTexture.loadFromFile("papirus.png"); // Za³adowanie odpowiedniej tekstury
-    Mission mission(missionTexture, window.getSize());
+    Mission mission(missionTexture, window.getSize(), playerName);
 
-   
+
     Weapon weapon(weaponTexture, 0.3f);
     weapon.spawn(playerPosition);
 
@@ -437,7 +470,7 @@ int Game(const std::string& playerName) {
             }
         }
         // Spowolnienie poruszania siê gracza
-        float playerSpeed = 0.8f;
+        float playerSpeed = 2.0f;
 
         Statistics gameStatistics;
 
@@ -487,7 +520,7 @@ int Game(const std::string& playerName) {
         sf::FloatRect playerBounds(playerPosition.x, playerPosition.y, playerSprite.getGlobalBounds().width, playerSprite.getGlobalBounds().height);
         for (const auto& stoneIndex : stoneIndices) {
             const auto& stonePos = stonePositions[stoneIndex];
-            sf::FloatRect stoneBounds(stonePos.x, stonePos.y, stoneSprite.getGlobalBounds().width-30.f, stoneSprite.getGlobalBounds().height-30.f);
+            sf::FloatRect stoneBounds(stonePos.x, stonePos.y, stoneSprite.getGlobalBounds().width - 30.f, stoneSprite.getGlobalBounds().height - 30.f);
             sf::FloatRect stoneRect(stonePos.x, stonePos.y, stoneSprite.getGlobalBounds().width + 10.f, stoneSprite.getGlobalBounds().height + 10.f);
             sf::FloatRect stoneRect2(stonePos.x, stonePos.y, stoneSprite.getGlobalBounds().width - 30.f, stoneSprite.getGlobalBounds().height - 30.f);
             if (playerBounds.intersects(stoneRect)) {
@@ -512,7 +545,30 @@ int Game(const std::string& playerName) {
             if (playerBounds.intersects(mobBounds)) {
                 // Uderzenie moba przez gracza (np. naciœniêcie spacji)
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-                    mob.takeDamage(1.3f); // Zadanie obra¿eñ mobowi (zdrowie skraca siê o 1.3)
+                    int lvl = 1;
+                    int potworki;
+                    gameStatistics.displayStats(playerName, potworki);
+
+                    if (potworki < 10) {
+                        lvl = 1;
+                    }
+                    else if (potworki >= 10 && potworki < 100) {
+                        lvl = 2;
+                    }
+                    else if (potworki >= 100 && potworki < 300) {
+                        lvl = 3;
+                    }
+                    if (lvl == 1) {
+                        mob.takeDamage(1.3f);
+                    }
+                    else if (lvl == 2) {
+                        mob.takeDamage(3.3f);
+                    }
+                    else if (lvl == 3) {
+                        mob.takeDamage(5.3f);
+                    }
+
+
 
                     // Sprawdzenie, czy zdrowie moba spad³o do zera
                     if (mob.getHealth() == 0) {
@@ -541,7 +597,7 @@ int Game(const std::string& playerName) {
 
         // Aktualizacja pozycji broni
         weapon.update(playerPosition);
-        mission.updatePosition(view.getCenter());
+        mission.updatePosition(view.getCenter(), playerName);
 
 
 
@@ -560,7 +616,7 @@ int Game(const std::string& playerName) {
         // Ustawienie pozycji gracza
         playerSprite.setPosition(playerPosition);
 
-       
+
 
         // Rysowanie pasków zdrowia
         playerHealthBar.draw(window);
@@ -582,8 +638,8 @@ int Game(const std::string& playerName) {
             window.draw(stoneSprite);
         }
 
-      
-       
+
+
         // Narysowanie gracza
         window.draw(playerSprite);
 
@@ -597,6 +653,7 @@ int Game(const std::string& playerName) {
         }
 
         window.draw(mission.getSprite());
+        window.draw(mission.titleText);
 
         // Wyœwietlenie wszystkich rysunków
         window.display();
@@ -727,7 +784,7 @@ private:
         passwordText.setPosition((window.getSize().x - passwordText.getLocalBounds().width) / 2.f, 250.f);
         passwordText.setFillColor(sf::Color::White);
     }
-  
+
     void handleTextEntered(sf::Uint32 unicode) {
         sf::Text& currentText = isEnteringUsername ? usernameText : passwordText;
         std::string& currentInput = isEnteringUsername ? playerName : password;
@@ -764,10 +821,10 @@ void showStats(const std::string& playerName) {
     int moby;
     font.loadFromFile("C:/Windows/Fonts/arial.ttf");
     font2.loadFromFile("KnightWarrior.otf");
-    
+
 
     Statistics gameStats;
-    gameStats.displayStats(playerName,moby);
+    gameStats.displayStats(playerName, moby);
 
     std::string mobyStr = std::to_string(moby);
 
@@ -783,7 +840,7 @@ void showStats(const std::string& playerName) {
     playerNick.setPosition((window.getSize().x - playerNick.getLocalBounds().width) / 2.f, 150.f);
     playerNick.setFillColor(sf::Color::White);
 
-    playerMob.setString("Ilosc zabitych potworów: "+ mobyStr);
+    playerMob.setString("Ilosc zabitych potworów: " + mobyStr);
     playerMob.setFont(font);
     playerMob.setCharacterSize(35);
     playerMob.setPosition((window.getSize().x - playerMob.getLocalBounds().width) / 2.f, 250.f);
